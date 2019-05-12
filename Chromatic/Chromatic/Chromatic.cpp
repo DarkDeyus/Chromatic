@@ -1,24 +1,58 @@
-// Chromatic.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/phoenix.hpp>
+#include <boost/spirit/include/qi_match.hpp>
 
-#include "pch.h"
-#include <iostream>
+template <typename Graph>
+bool read_coloring_problem(std::istream& dimacs, Graph& g) {
+	auto add_edge_ = [&g](size_t from, size_t to) { add_edge(from, to, g); };
+	size_t vertices = 0, edges = 0;
 
-int main()
-{
-    std::cout << "Hello World!\n"; 
+	using namespace boost::spirit::qi;
+	namespace px = boost::phoenix;
+	uint_parser<size_t> num_;
+
+	auto eoil = eol | eoi;
+	auto comment = boost::proto::deep_copy(lexeme["c " >> *(char_ - eol) >> eoil] | eol);
+	auto vertices_ = px::ref(vertices);
+	auto edges_ = px::ref(edges);
+
+	dimacs >> std::noskipws >> phrase_match(
+		*comment >>
+		("p" >> lit("edge") >> num_[vertices_ = _1] >> num_[edges_ = _1] >> eoil) >>
+		repeat(edges_)[
+			*comment >> ("e" >> num_ >> num_ >> eoil)[px::bind(add_edge_, _1 - 1, _2 - 1)]
+		]
+		>> *comment >> eoi
+				, blank);
+
+	return dimacs.good() || dimacs.eof();
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/graphviz.hpp>
+#include <fstream>
+#include <iostream>
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+using namespace boost::graph;
+
+typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> Graph;
+
+int main() {
+	Graph g2;
+	std::ifstream input("../graphs/anna.col");
+	if (read_coloring_problem(input, g2))
+	{
+		std::cout << "Nodes: " << num_vertices(g2) << "\n";
+		std::cout << "Edges: " << num_edges(g2) << "\n";
+		boost::write_graphviz(std::cout, g2);
+		std::cout << "Nodes: " << num_vertices(g2) << "\n";
+		std::cout << "Edges: " << num_edges(g2) << "\n";
+	}
+	else {
+		std::cout << "Parse error\n";
+	}
+}
+
 
 /*
 An input file contains all the information about a graph needed to define a coloring problem.
