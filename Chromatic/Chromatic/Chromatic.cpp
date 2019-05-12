@@ -2,17 +2,22 @@
 #include "Graph.h"
 #include "GraphException.h"
 #include <iostream>
-
+#include "ConnectedSeqeuentialColoring.h"
 
 int main() 
 {
-	DimacsParser parser("../graphs/anna.col");
+	DimacsParser parser("3-regular_graph_with_6_vertices.col");
 	try
 	{
 		Graph g = parser.Read();
-		boost::write_graphviz(std::cout, g);
-		std::cout << "Nodes: " << g.VerticesCount() << "\n";
-		std::cout << "Edges: " << g.EdgesCount() << "\n";
+		ConnectedSeqeuentialColoring coloringCS(g);
+		coloringCS.Run();
+		std::cout << "Time: " << coloringCS.ColoringTime() << std::endl;
+		std::cout << "Number of colors: " << coloringCS.NumberOfColors() << std::endl;
+		for (int i = 0; i < g.VerticesCount(); ++i)
+		{
+			std::cout << "Color for " << i << " : " << coloringCS.Colors()[i] << std::endl;
+		}
 		return 0;
 	}
 	catch (GraphException e)
