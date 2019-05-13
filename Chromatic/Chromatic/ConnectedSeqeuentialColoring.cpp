@@ -69,9 +69,9 @@ void ConnectedSeqeuentialColoring::Run()
 {
 	boost::timer timer;
 	timer.restart();
-	Graph::vertex_descriptor start_vertex = boost::vertex(0, _graph);
 	connected_sequential_visitor vis(_colors);
-	boost::graph::breadth_first_search(_graph, start_vertex, boost::default_bfs_visitor());
+	
+	boost::breadth_first_search(_graph, boost::vertex(0, _graph), visitor(boost::default_bfs_visitor()));
 	_number_of_colors = vis._number_of_colors;
 
 	_time = timer.elapsed();
