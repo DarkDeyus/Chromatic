@@ -6,7 +6,7 @@
 
 int main() 
 {
-	DimacsParser parser("3-regular_graph_with_6_vertices.col");
+	DimacsParser parser("../graphs/anna.col");
 	try
 	{
 		Graph g = parser.Read();
