@@ -14,6 +14,7 @@ public:
 	virtual std::string Name() override;
 	virtual double ColoringTime() override;
 	virtual size_t NumberOfColors() override;
+	size_t ZajacStepCounter();
 private:
 	Graph _graph;
 	static std::string _name;
@@ -21,5 +22,6 @@ private:
 	double _time;
 	std::vector<size_t> _colors;
 	size_t _number_of_colors;
+	size_t _zajac_step_counter;
 };
 

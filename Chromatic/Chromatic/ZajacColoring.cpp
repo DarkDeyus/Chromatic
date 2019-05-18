@@ -4,7 +4,7 @@
 std::string ZajacColoring::_name = "Zajac Coloring";
 std::string ZajacColoring::_description = "Coloring with usage of Zajac algorithm: if graph is regular, use Zajac trick, otherwise do smalles last";
 
-ZajacColoring::ZajacColoring(Graph & graph) : _graph(graph), _colors(graph.VerticesCount()), _time(-1.0)
+ZajacColoring::ZajacColoring(Graph & graph) : _graph(graph), _colors(graph.VerticesCount()), _time(-1.0), _zajac_step_counter(0)
 {
 }
 
