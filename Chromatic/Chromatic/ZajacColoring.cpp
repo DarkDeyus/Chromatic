@@ -1,5 +1,6 @@
 #include "ZajacColoring.h"
 #include <boost/timer.hpp>
+#include <chrono>
 
 std::string ZajacColoring::_name = "Zajac Coloring";
 std::string ZajacColoring::_description = "Coloring with usage of Zajac algorithm: if graph is regular, use Zajac trick, otherwise do smalles last";
@@ -14,10 +15,10 @@ ZajacColoring::~ZajacColoring()
 
 void ZajacColoring::Run()
 {
-	boost::timer timer;
-	timer.restart();
+	auto start = std::chrono::system_clock::now();
 
-	_time = timer.elapsed();
+	auto end = std::chrono::system_clock::now();
+	_time = std::chrono::duration<double>(end - start).count();
 }
 
 const Graph & ZajacColoring::ColoredGraph()

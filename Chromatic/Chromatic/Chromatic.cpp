@@ -6,7 +6,7 @@
 
 int main() 
 {
-	DimacsParser parser("../graphs/anna.col");
+	DimacsParser parser("../graphs/DSJC1000-5.col");
 	try
 	{
 		Graph g = parser.Read();
