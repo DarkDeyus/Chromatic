@@ -7,7 +7,7 @@
 
 int main() 
 {
-	DimacsParser parser("../graphs/huck.col");
+	DimacsParser parser("../graphs/3-regular_graph_with_6_vertices.col");
 	try
 	{
 		Graph g = parser.Read();
