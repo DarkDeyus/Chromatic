@@ -2,11 +2,10 @@
 #include "ConnectedSeqeuentialColoring.h"
 #include <boost/timer.hpp>
 
-
 std::string ConnectedSeqeuentialColoring::_name = "Connected Sequential";
 std::string ConnectedSeqeuentialColoring::_description = "Colors graph with BFS alghoritm";
 
-ConnectedSeqeuentialColoring::ConnectedSeqeuentialColoring(Graph & graph) : _graph(graph), _colors(graph.VerticesCount()), _time(-1)
+ConnectedSeqeuentialColoring::ConnectedSeqeuentialColoring(Graph & graph) : _graph(graph), _colors(graph.VerticesCount(), SIZE_MAX), _time(-1)
 {
 }
 
@@ -20,7 +19,7 @@ struct connected_sequential_visitor : public boost::default_bfs_visitor
 public:
 	size_t _number_of_colors;
 
-	connected_sequential_visitor(std::vector<size_t> colors) : _colors(colors)
+	connected_sequential_visitor(std::vector<size_t> & colors) : _colors(colors)
 	{
 		_number_of_colors = 0;
 	}
@@ -35,11 +34,14 @@ public:
 		}
 
 		auto neighbours = boost::adjacent_vertices(s, g);
-		std::vector<bool> taken_colors(false, _number_of_colors);
+		std::vector<bool> taken_colors(_number_of_colors, false);
 		size_t colors_left = _number_of_colors;
 		for (auto neighbour : make_iterator_range(neighbours))
 		{
-			if (!taken_colors[neighbour])
+			size_t n_color = _colors.get()[neighbour];
+			if (n_color == SIZE_MAX)
+				continue;
+			if (!taken_colors[n_color])
 			{
 				colors_left--;
 				if (colors_left == 0)
@@ -48,7 +50,7 @@ public:
 					_number_of_colors += 1;
 					return;
 				}
-				taken_colors[neighbour] = true;
+				taken_colors[n_color] = true;
 			}
 		}
 
@@ -71,7 +73,7 @@ void ConnectedSeqeuentialColoring::Run()
 	timer.restart();
 	connected_sequential_visitor vis(_colors);
 	
-	boost::breadth_first_search(_graph, boost::vertex(0, _graph), visitor(boost::default_bfs_visitor()));
+	boost::breadth_first_search(_graph, boost::vertex(0, _graph), visitor(vis));
 	_number_of_colors = vis._number_of_colors;
 
 	_time = timer.elapsed();
