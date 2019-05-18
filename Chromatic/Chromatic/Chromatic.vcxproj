@@ -167,6 +167,7 @@
     <ClCompile Include="DimacsParser.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="GraphException.cpp" />
+    <ClCompile Include="ResultSaver.cpp" />
     <ClCompile Include="ZajacColoring.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="DimacsParser.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="GraphException.h" />
+    <ClInclude Include="ResultSaver.h" />
     <ClInclude Include="ZajacColoring.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

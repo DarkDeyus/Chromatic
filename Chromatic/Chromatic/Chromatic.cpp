@@ -1,12 +1,13 @@
 #include "DimacsParser.h"
 #include "Graph.h"
 #include "GraphException.h"
+#include "ResultSaver.h"
 #include <iostream>
 #include "ConnectedSeqeuentialColoring.h"
 
 int main() 
 {
-	DimacsParser parser("../graphs/DSJC1000-5.col");
+	DimacsParser parser("../graphs/huck.col");
 	try
 	{
 		Graph g = parser.Read();
@@ -18,6 +19,8 @@ int main()
 		{
 			std::cout << "Color for " << i << " : " << coloringCS.Colors()[i] << std::endl;
 		}
+		ResultSaver saver(g, coloringCS.Name(), coloringCS.Colors());
+		saver.WriteResult();
 		return 0;
 	}
 	catch (GraphException e)
