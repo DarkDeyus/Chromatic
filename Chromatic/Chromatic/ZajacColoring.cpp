@@ -1,5 +1,4 @@
 #include "ZajacColoring.h"
-#include <boost/timer.hpp>
 #include <chrono>
 #include <boost/heap/fibonacci_heap.hpp>
 #include <map>
