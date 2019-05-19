@@ -15,17 +15,6 @@ ZajacColoring::~ZajacColoring()
 {
 }
 
-struct Comparer
-{
-	static std::vector<size_t> degrees;
-	bool operator()(const size_t& vd1, const size_t& vd2) const
-	{
-		return degrees[vd1] < degrees[vd2];
-	}
-};
-
-std::vector<size_t> Comparer::degrees = std::vector<size_t>();
-
 class ZajacColoringHelper
 {
 public:
@@ -35,12 +24,12 @@ public:
 
 	void Color()
 	{
-		Comparer::degrees.clear();
+		std::vector<size_t> degrees(_graph.VerticesCount());
 		_number_of_colors.get() = 0;
 		int k = 0;
 		Comparer cmp;
 		std::vector<size_t> degrees_count;
-		auto example = _degree_heap.push(0);
+		auto example = _degree_heap.push(VertexDegree(0,0));
 		_degree_heap.pop();
 		std::vector<decltype(example)> handlers;
 		for (size_t i = 0; i < _graph.VerticesCount(); ++i)
@@ -55,13 +44,13 @@ public:
 				}
 			}
 			degrees_count[degree]++;
-			Comparer::degrees.push_back(degree);
-			handlers.push_back(_degree_heap.push(i));
+			degrees[i] = degree;
+			handlers.push_back(_degree_heap.push(VertexDegree(i,degree)));
 		}
-		while (_graph.EdgesCount() > 0)
+		while (!_degree_heap.empty())
 		{
-			size_t popped = _degree_heap.top();
-			size_t popped_degree = Comparer::degrees[popped];
+			size_t popped = _degree_heap.top().vertex;
+			size_t popped_degree = degrees[popped];
 			bool is_regular = false;
 			size_t regular_degree = SIZE_MAX;
 			for (size_t i = 0; i < degrees_count.size(); ++i)
@@ -78,13 +67,14 @@ public:
 			{
 				_degree_heap.pop();
 				_color_stack.push(ColorPair(popped));
-				degrees_count[Comparer::degrees[popped]]--;
+				degrees_count[degrees[popped]]--;
 				for (auto neighbour : make_iterator_range(boost::adjacent_vertices(popped, _graph)))
 				{
-					degrees_count[Comparer::degrees[neighbour]]--;
-					Comparer::degrees[neighbour]--;
+					degrees_count[degrees[neighbour]]--;
+					degrees[neighbour]--;
+					(*(handlers[neighbour])).degree = degrees[neighbour];
 					_degree_heap.update(handlers[neighbour]);
-					degrees_count[Comparer::degrees[neighbour]]++;
+					degrees_count[degrees[neighbour]]++;
 				}
 				boost::remove_vertex(popped, _graph);
 				continue;
@@ -256,8 +246,9 @@ public:
 
 				for (size_t i = 0; i < path.size(); ++i)
 				{
-					degrees_count[Comparer::degrees[path[i]]]--;
-					Comparer::degrees[path[i]] = 0;
+					degrees_count[degrees[path[i]]]--;
+					degrees[path[i]] = 0;
+					(*(handlers[path[i]])).degree = SIZE_MAX;
 					_degree_heap.update(handlers[path[i]]);
 					boost::remove_vertex(path[i], _graph);
 					_degree_heap.pop();
@@ -279,14 +270,19 @@ public:
 
 			for (size_t i = path_dict[vs]; i < path.size(); ++i)
 			{
-				degrees_count[Comparer::degrees[path[i]]]--;
+				degrees_count[degrees[path[i]]]--;
+				*(handlers[path[i]]) = VertexDegree((*(handlers[path[i]])).vertex, SIZE_MAX);
+				_degree_heap.update(handlers[path[i]]);
+				VertexDegree vd = _degree_heap.top();
+				_degree_heap.pop();
+
 				for (auto neighbour : make_iterator_range(boost::adjacent_vertices(path[i], _graph)))
 				{
-					degrees_count[Comparer::degrees[neighbour]]--;
-					Comparer::degrees[neighbour]--;
-					degrees_count[Comparer::degrees[neighbour]]++;
+					degrees_count[degrees[neighbour]]--;
+					degrees[neighbour]--;
+					degrees_count[degrees[neighbour]]++;
+					(*(handlers[neighbour])).degree = degrees[neighbour];
 					_degree_heap.update(handlers[neighbour]);
-					_degree_heap.pop();
 				}
 				boost::clear_vertex(path[i], _graph);
 			}
@@ -299,6 +295,12 @@ public:
 			if (pair.otherVertex != SIZE_MAX)
 			{
 				_colors.get()[pair.vertex] = _colors.get()[pair.otherVertex];
+				continue;
+			}
+			if (_number_of_colors.get() == 0)
+			{
+				_number_of_colors.get() = 1;
+				_colors.get()[pair.vertex] = 0;
 				continue;
 			}
 			auto neighbours = boost::adjacent_vertices(pair.vertex, _orig_graph.get());
@@ -316,9 +318,20 @@ public:
 					{
 						_colors.get()[pair.vertex] = _number_of_colors.get();
 						_number_of_colors.get() += 1;
-						return;
+						break;
 					}
 					taken_colors[n_color] = true;
+				}
+			}
+			if (_colors.get()[pair.vertex] == SIZE_MAX)
+			{
+				for (int i = 0; i < _number_of_colors; ++i)
+				{
+					if (!taken_colors[i])
+					{
+						_colors.get()[pair.vertex] = i;
+						break;
+					}
 				}
 			}
 		}
@@ -345,11 +358,20 @@ private:
 		size_t vertex;
 		size_t degree;
 	};
+	struct Comparer
+	{
+		bool operator()(const VertexDegree& vd1, const VertexDegree& vd2) const
+		{
+			int d1 = vd1.degree == SIZE_MAX ? 0 : (vd1.degree + 1);
+			int d2 = vd2.degree == SIZE_MAX ? 0 : (vd2.degree + 1);
+			return d1 > d2;
+		}
+	};
 	std::stack<ColorPair> _color_stack;
 	std::map<size_t, size_t> _color_map;
 	std::reference_wrapper<std::vector<size_t>> _colors;
 	std::reference_wrapper<size_t> _number_of_colors;
-	boost::heap::fibonacci_heap<size_t, boost::heap::compare<Comparer>> _degree_heap;
+	boost::heap::fibonacci_heap<VertexDegree, boost::heap::compare<Comparer>> _degree_heap;
 	std::reference_wrapper<Graph> _orig_graph;
 };
 
@@ -369,7 +391,6 @@ void ZajacColoring::Run()
 {
 	auto start = std::chrono::system_clock::now();
 
-	Graph g_copy = _graph;
 	std::stack<size_t> color_stack;
 	ZajacColoringHelper helper(_graph, _colors, _number_of_colors);
 	helper.Color();
