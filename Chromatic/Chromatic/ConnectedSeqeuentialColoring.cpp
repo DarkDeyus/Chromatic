@@ -1,6 +1,5 @@
 #include <boost/graph/breadth_first_search.hpp>
 #include "ConnectedSeqeuentialColoring.h"
-#include <boost/timer.hpp>
 #include <chrono>
 
 std::string ConnectedSeqeuentialColoring::_name = "Connected Sequential";
