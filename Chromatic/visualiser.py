@@ -1,7 +1,7 @@
 import networkx as nx
 import os
 import matplotlib.pyplot as plt
-
+import sys
 
 def get_graph_to_file(graph, regular):
     lines = nx.generate_edgelist(graph, data=False)
@@ -25,7 +25,7 @@ def generate_k_regular_graph_with_n_vertices(k, n):
 
 
 def remove_comments():
-    path = r".\graphs"
+    path = r"C:\Users\Dark\source\repos\Chromatic\Chromatic\graphs"
     col_files = []
     for item in os.listdir(path):
         if item.endswith('.col'):
@@ -78,22 +78,49 @@ def create_graph_from_file(file_location):
     return g
 
 
-def import_colored_graph(file_location):
-    main_path = r'.\graphs'
-    colors = []
-    with open(file_location) as f:
-        content = f.readlines()
+def import_colored_graph(path_to_result=None, path_to_graph=None):
+    read_from_imput = False
+    if path_to_result is None:
+        read_from_imput = True
 
-    filename = content[0].strip('\n')
+    if read_from_imput:
+        content = []
+        while True:
+            line = input()
+            content.append(line)
+            if line == '':
+                break
+    else:
+        with open(path_to_result) as f:
+            content = f.readlines()
+
+    colors = []
+    if path_to_graph is None:
+        path_to_graph = content[0].strip('\n')
     content.remove(content[0])
     for line in content:
-        m = [int(x) for x in line.split(" ")]
-        colors.append(m[1])
+        if line == '':
+            break
+        splitted_line = [int(x) for x in line.split(" ")]
+        colors.append(splitted_line[1])
 
-    graph = create_graph_from_file(os.path.join(main_path, filename))
-
+    graph = create_graph_from_file(path_to_graph)
     nx.draw_networkx(graph, node_color=colors, cmap=plt.cm.Reds, with_labels=True)
     plt.show()
 
 
-import_colored_graph(os.path.join(r'.', 'results', 'myciel2.col_Connected Sequential.colored'))
+def visualise():
+    if len(sys.argv) == 3:
+        path_to_result = sys.argv[1]
+        path_to_graph = sys.argv[2]
+        import_colored_graph(path_to_result, path_to_graph)
+    elif len(sys.argv) == 2:
+        path_to_result = sys.argv[1]
+        import_colored_graph(path_to_result)
+    else:
+        import_colored_graph()
+    return
+
+
+if __name__ == "__main__":
+    visualise()
