@@ -5,36 +5,83 @@
 #include <iostream>
 #include "ConnectedSeqeuentialColoring.h"
 #include "ZajacColoring.h"
-#include <boost/heap/fibonacci_heap.hpp>
+#include <boost/lexical_cast.hpp>
+#include <fstream>
 
-int main() 
+std::vector<std::string> ParseArgs(int argc, char** argv)
 {
+	std::vector<std::string> args(argc);
+	for (int i = 0; i < argc; ++i)
+	{
+		args[i] = argv[i];
+	}
+	return args;
+}
 
-	std::string filename = "../graphs/DSJC1000-9.col";
+int main(int argc, char **argv)
+{
+	std::vector<std::string> args = ParseArgs(argc, argv);
+	if (args.size() < 3 || args.size() > 5)
+	{
+		std::cout << "Usage: chromatic path_to_graph 0|1 [vis] [output_file]" << std::endl;
+		std::cout << "In second argument use 0 to color with connected sequential" << std::endl;
+		std::cout << "In second argument use 1 to color with Zajac's alogoritm" << std::endl;
+		std::cout << "Set vis to true (it's false by default) to get visualisable result" << std::endl;
+		return -1; 
+	}
+	std::string filename = args[1];
+	bool isZajac = boost::lexical_cast<bool>(args[2]);
+	bool vis = args.size() >= 4 && boost::lexical_cast<bool>(args[3]);
+	std::ofstream filestream;
+	if (args.size() == 5)
+	{
+		filestream.open(args[4]);
+	}
+	std::ostream& stream = (args.size() != 5? std::cout : filestream);
 	DimacsParser parser(filename);
 	try
 	{
 		Graph g = parser.Read();
-		ConnectedSeqeuentialColoring coloringCS(g);
-		coloringCS.Run();
-		std::cout << "Time: " << coloringCS.ColoringTime() << std::endl;
-		std::cout << "Number of colors: " << coloringCS.NumberOfColors() << std::endl;
-		for (int i = 0; i < g.VerticesCount(); ++i)
+		if (!isZajac)
 		{
-			std::cout << "Color for " << i << " : " << coloringCS.Colors()[i] << std::endl;
+			ConnectedSeqeuentialColoring coloringCS(g);
+			coloringCS.Run();
+			std::vector<size_t> colors = coloringCS.Colors();
+			if (!vis)
+			{
+				stream << "Time: " << coloringCS.ColoringTime() << std::endl;
+				stream << "Number of colors: " << coloringCS.NumberOfColors() << std::endl;
+				for (int i = 0; i < g.VerticesCount(); ++i)
+				{
+					stream << "Color for " << i << " : " << coloringCS.Colors()[i] << std::endl;
+				}
+			}
+			else
+			{
+				ResultSaver saver(coloringCS);
+				saver.WriteResult(stream);
+			}
 		}
-
-		ZajacColoring coloringZ(g);
-		coloringZ.Run();
-		std::cout << "Time: " << coloringZ.ColoringTime() << std::endl;
-		std::cout << "Number of colors: " << coloringZ.NumberOfColors() << std::endl;
-		std::cout << "Zajac's steps: " << coloringZ.ZajacStepCounter() << std::endl;
-		for (int i = 0; i < g.VerticesCount(); ++i)
+		else
 		{
-			std::cout << "Color for " << i << " : " << coloringZ.Colors()[i] << std::endl;
+			ZajacColoring coloringZ(g);
+			coloringZ.Run();
+			if (!vis)
+			{
+				stream << "Time: " << coloringZ.ColoringTime() << std::endl;
+				stream << "Number of colors: " << coloringZ.NumberOfColors() << std::endl;
+				stream << "Zajac's steps: " << coloringZ.ZajacStepCounter() << std::endl;
+				for (int i = 0; i < g.VerticesCount(); ++i)
+				{
+					stream << "Color for " << i << " : " << coloringZ.Colors()[i] << std::endl;
+				}
+			}
+			else
+			{
+				ResultSaver saver(coloringZ);
+				saver.WriteResult(stream);
+			}
 		}
-    ResultSaver saver(g, coloringZ.Name(), coloringZ.Colors());
-		saver.WriteResult();
 		return 0;
 	}
 	catch (GraphException e)

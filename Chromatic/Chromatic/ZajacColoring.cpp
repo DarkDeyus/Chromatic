@@ -428,37 +428,37 @@ void ZajacColoring::Run()
 	_time = std::chrono::duration<double>(end - start).count();
 }
 
-const Graph & ZajacColoring::ColoredGraph()
+const Graph & ZajacColoring::ColoredGraph() const
 {
 	return _graph;
 }
 
-const std::vector<size_t>& ZajacColoring::Colors()
+const std::vector<size_t>& ZajacColoring::Colors() const
 {
 	return _colors;
 }
 
-std::string ZajacColoring::Description()
+std::string ZajacColoring::Description() const
 {
 	return ZajacColoring::_description;
 }
 
-std::string ZajacColoring::Name()
+std::string ZajacColoring::Name() const
 {
 	return ZajacColoring::_name;
 }
 
-double ZajacColoring::ColoringTime()
+double ZajacColoring::ColoringTime() const
 {
 	return _time;
 }
 
-size_t ZajacColoring::NumberOfColors()
+size_t ZajacColoring::NumberOfColors() const
 {
 	return _number_of_colors;
 }
 
-size_t ZajacColoring::ZajacStepCounter()
+size_t ZajacColoring::ZajacStepCounter() const
 {
 	return _zajac_step_counter;
 }

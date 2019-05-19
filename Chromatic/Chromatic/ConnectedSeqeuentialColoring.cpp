@@ -79,32 +79,32 @@ void ConnectedSeqeuentialColoring::Run()
 	_time = std::chrono::duration<double>(end - start).count();
 }
 
-const Graph & ConnectedSeqeuentialColoring::ColoredGraph()
+const Graph & ConnectedSeqeuentialColoring::ColoredGraph() const
 {
 	return _graph;
 }
 
-const std::vector<size_t> & ConnectedSeqeuentialColoring::Colors()
+const std::vector<size_t> & ConnectedSeqeuentialColoring::Colors() const
 {
 	return _colors;
 }
 
-std::string ConnectedSeqeuentialColoring::Description()
+std::string ConnectedSeqeuentialColoring::Description() const
 {
 	return ConnectedSeqeuentialColoring::_description;
 }
 
-std::string ConnectedSeqeuentialColoring::Name()
+std::string ConnectedSeqeuentialColoring::Name() const
 {
 	return ConnectedSeqeuentialColoring::_name;
 }
 
-double ConnectedSeqeuentialColoring::ColoringTime()
+double ConnectedSeqeuentialColoring::ColoringTime() const
 {
 	return _time;
 }
 
-size_t ConnectedSeqeuentialColoring::NumberOfColors()
+size_t ConnectedSeqeuentialColoring::NumberOfColors() const
 {
 	return _number_of_colors;
 }

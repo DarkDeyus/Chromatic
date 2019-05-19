@@ -8,12 +8,12 @@ public:
 	virtual ~ConnectedSeqeuentialColoring();
 	
 	virtual void Run() override;
-	virtual const Graph & ColoredGraph() override;
-	virtual const std::vector<size_t> & Colors() override;
-	virtual std::string Description() override;
-	virtual std::string Name() override;
-	virtual double ColoringTime() override;
-	virtual size_t NumberOfColors() override;
+	virtual const Graph & ColoredGraph() const override;
+	virtual const std::vector<size_t> & Colors() const override;
+	virtual std::string Description() const override;
+	virtual std::string Name() const override;
+	virtual double ColoringTime() const override;
+	virtual size_t NumberOfColors() const override;
 private:
 	double _time;
 	static std::string _name;
