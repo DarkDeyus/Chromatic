@@ -4,10 +4,14 @@
 #include "ResultSaver.h"
 #include <iostream>
 #include "ConnectedSeqeuentialColoring.h"
+#include "ZajacColoring.h"
+#include <boost/heap/fibonacci_heap.hpp>
 
 int main() 
 {
-	DimacsParser parser("../graphs/3-regular_graph_with_6_vertices.col");
+
+	std::string filename = "../graphs/DSJC1000-9.col";
+	DimacsParser parser(filename);
 	try
 	{
 		Graph g = parser.Read();
@@ -19,7 +23,17 @@ int main()
 		{
 			std::cout << "Color for " << i << " : " << coloringCS.Colors()[i] << std::endl;
 		}
-		ResultSaver saver(g, coloringCS.Name(), coloringCS.Colors());
+
+		ZajacColoring coloringZ(g);
+		coloringZ.Run();
+		std::cout << "Time: " << coloringZ.ColoringTime() << std::endl;
+		std::cout << "Number of colors: " << coloringZ.NumberOfColors() << std::endl;
+		std::cout << "Zajac's steps: " << coloringZ.ZajacStepCounter() << std::endl;
+		for (int i = 0; i < g.VerticesCount(); ++i)
+		{
+			std::cout << "Color for " << i << " : " << coloringZ.Colors()[i] << std::endl;
+		}
+    ResultSaver saver(g, coloringZ.Name(), coloringZ.Colors());
 		saver.WriteResult();
 		return 0;
 	}
