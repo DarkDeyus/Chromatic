@@ -8,7 +8,8 @@
 
 int main() 
 {
-	DimacsParser parser("../graphs/DSJC1000-5.col");
+	std::string filename = "../graphs/DSJC1000-9.col";
+	DimacsParser parser(filename);
 	try
 	{
 		Graph g = parser.Read();

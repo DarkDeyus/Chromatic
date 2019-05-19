@@ -76,7 +76,7 @@ public:
 					_degree_heap.update(handlers[neighbour]);
 					degrees_count[degrees[neighbour]]++;
 				}
-				boost::remove_vertex(popped, _graph);
+				boost::clear_vertex(popped, _graph);
 				continue;
 			}
 			std::vector<size_t> path;
@@ -165,11 +165,11 @@ public:
 				}
 				size_t vjindex = path_dict[vj];
 				_color_stack.push(ColorPair(path[1]));
-				for (int i = vjindex; i > 2; --i)
+				for (size_t i = vjindex; i > 2; --i)
 				{
 					_color_stack.push(ColorPair(path[i]));
 				}
-				for (int i = vjindex + 1; i < _graph.VerticesCount(); ++i)
+				for (size_t i = vjindex + 1; i < _graph.VerticesCount(); ++i)
 				{
 					_color_stack.push(ColorPair(path[i]));
 				}
@@ -233,11 +233,11 @@ public:
 				}
 				size_t vjindex = path_dict[vj];
 				_color_stack.push(ColorPair(path[1]));
-				for (int i = vjindex; i > 2; --i)
+				for (size_t i = vjindex; i > 2; --i)
 				{
 					_color_stack.push(ColorPair(path[i]));
 				}
-				for (int i = vjindex + 1; i < _graph.VerticesCount(); ++i)
+				for (size_t i = vjindex + 1; i < _graph.VerticesCount(); ++i)
 				{
 					_color_stack.push(ColorPair(path[i]));
 				}
@@ -325,7 +325,7 @@ public:
 			}
 			if (_colors.get()[pair.vertex] == SIZE_MAX)
 			{
-				for (int i = 0; i < _number_of_colors; ++i)
+				for (size_t i = 0; i < _number_of_colors; ++i)
 				{
 					if (!taken_colors[i])
 					{
