@@ -3,6 +3,8 @@
 #include "GraphException.h"
 #include <iostream>
 #include "ConnectedSeqeuentialColoring.h"
+#include "ZajacColoring.h"
+#include <boost/heap/fibonacci_heap.hpp>
 
 int main() 
 {
@@ -17,6 +19,15 @@ int main()
 		for (int i = 0; i < g.VerticesCount(); ++i)
 		{
 			std::cout << "Color for " << i << " : " << coloringCS.Colors()[i] << std::endl;
+		}
+
+		ZajacColoring coloringZ(g);
+		coloringZ.Run();
+		std::cout << "Time: " << coloringZ.ColoringTime() << std::endl;
+		std::cout << "Number of colors: " << coloringZ.NumberOfColors() << std::endl;
+		for (int i = 0; i < g.VerticesCount(); ++i)
+		{
+			std::cout << "Color for " << i << " : " << coloringZ.Colors()[i] << std::endl;
 		}
 		return 0;
 	}
