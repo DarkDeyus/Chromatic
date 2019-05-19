@@ -26,6 +26,7 @@ int main()
 		coloringZ.Run();
 		std::cout << "Time: " << coloringZ.ColoringTime() << std::endl;
 		std::cout << "Number of colors: " << coloringZ.NumberOfColors() << std::endl;
+		std::cout << "Zajac's steps: " << coloringZ.ZajacStepCounter() << std::endl;
 		for (int i = 0; i < g.VerticesCount(); ++i)
 		{
 			std::cout << "Color for " << i << " : " << coloringZ.Colors()[i] << std::endl;

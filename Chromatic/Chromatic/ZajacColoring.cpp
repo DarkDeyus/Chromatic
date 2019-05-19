@@ -24,9 +24,11 @@ public:
 
 	void Color()
 	{
+		//Init necessary variables and structures
 		std::vector<size_t> degrees(_graph.VerticesCount());
 		_number_of_colors.get() = 0;
 		int k = 0;
+		zajacSteps = 0;
 		Comparer cmp;
 		std::vector<size_t> degrees_count;
 		auto example = _degree_heap.push(VertexDegree(0,0));
@@ -47,12 +49,15 @@ public:
 			degrees[i] = degree;
 			handlers.push_back(_degree_heap.push(VertexDegree(i,degree)));
 		}
+
+		//Proccess all vertices
 		while (!_degree_heap.empty())
 		{
 			size_t popped = _degree_heap.top().vertex;
 			size_t popped_degree = degrees[popped];
 			bool is_regular = false;
 			size_t regular_degree = SIZE_MAX;
+			//Check regularity
 			for (size_t i = 0; i < degrees_count.size(); ++i)
 			{
 				if (degrees_count[i] > 0 && degrees_count[i] < _graph.VerticesCount())
@@ -63,6 +68,8 @@ public:
 				regular_degree = i;
 				break;
 			}
+
+			//If is not regular, do Smallest Last
 			if (!is_regular)
 			{
 				_degree_heap.pop();
@@ -79,6 +86,9 @@ public:
 				boost::clear_vertex(popped, _graph);
 				continue;
 			}
+
+			//Zajac's part - find first vertices on path
+			zajacSteps++;
 			std::vector<size_t> path;
 			size_t v0 = SIZE_MAX, v2 = SIZE_MAX;
 			for (auto neighbour1 : make_iterator_range(boost::adjacent_vertices(popped, _graph)))
@@ -108,6 +118,8 @@ public:
 					break;
 				}
 			}
+
+			//If all neighbours are connected, graph is not Delta(G) colorable - color in greedy way
 			if (v0 == SIZE_MAX)
 			{
 				for (auto vertex : boost::make_iterator_range(boost::vertices(_graph)))
@@ -116,6 +128,8 @@ public:
 				}
 				break;
 			}
+			
+			//Construct path
 			path.push_back(v0);
 			path.push_back(popped);
 			path.push_back(v2);
@@ -123,6 +137,8 @@ public:
 			path_dict.insert({ v0, 0 });
 			path_dict.insert({ popped, 1 });
 			path_dict.insert({ v2, 2 });
+
+			//Try to find next vertex as long as its possible
 			while (true)
 			{
 				if (path.size() == _graph.VerticesCount())
@@ -152,6 +168,8 @@ public:
 				path_dict.insert({ next, path.size() });
 				path.push_back(next);
 			}
+
+			//If all vertices are on path
 			if (path.size() == _graph.VerticesCount())
 			{
 				size_t vj;
@@ -177,6 +195,9 @@ public:
 				_color_stack.push(ColorPair(path[0]));
 				break;
 			}
+			
+			//If not all vertices are on path
+			//Find cycle on path
 			size_t vs = SIZE_MAX;
 			for (size_t i = 0; i < path.size(); ++i)
 			{
@@ -193,6 +214,7 @@ public:
 					break;
 				}
 			}
+			//Find vertex in cycle and its neighbour
 			size_t neighbour_outside = SIZE_MAX;
 			size_t neighbour_inside = SIZE_MAX;
 			for (size_t i = path.size() - 2; i >= path_dict[vs]; --i)
@@ -220,6 +242,7 @@ public:
 				}
 			}
 
+			//If cycle (path) is disconnected from the rest of graph, do the same thing for coloring path as it would be whole graph, but don't stop main loop
 			if (neighbour_outside == SIZE_MAX)
 			{
 				size_t vj;
@@ -256,6 +279,7 @@ public:
 				continue;
 			}
 
+			//Color cycles
 			size_t neighbour_inside_index = path_dict[neighbour_inside];
 			for (size_t i = neighbour_inside_index; i >= path_dict[vs] && i !=SIZE_MAX; --i)
 			{
@@ -268,6 +292,7 @@ public:
 			}
 			_color_stack.push(ColorPair(path[neighbour_inside_index + 1], neighbour_outside));
 
+			//Remove cycle from graph
 			for (size_t i = path_dict[vs]; i < path.size(); ++i)
 			{
 				degrees_count[degrees[path[i]]]--;
@@ -288,10 +313,12 @@ public:
 			}
 		}
 
+		//Color vertices from stack in greedy way
 		while (!_color_stack.empty())
 		{
 			ColorPair pair = _color_stack.top();
 			_color_stack.pop();
+			//If vertex has designated color as the other, color him in the same way
 			if (pair.otherVertex != SIZE_MAX)
 			{
 				_colors.get()[pair.vertex] = _colors.get()[pair.otherVertex];
@@ -336,6 +363,7 @@ public:
 			}
 		}
 	}
+	int zajacSteps;
 private:
 	Graph _graph;
 	struct ColorPair
@@ -396,6 +424,7 @@ void ZajacColoring::Run()
 	helper.Color();
 
 	auto end = std::chrono::system_clock::now();
+	_zajac_step_counter = helper.zajacSteps;
 	_time = std::chrono::duration<double>(end - start).count();
 }
 
@@ -427,4 +456,9 @@ double ZajacColoring::ColoringTime()
 size_t ZajacColoring::NumberOfColors()
 {
 	return _number_of_colors;
+}
+
+size_t ZajacColoring::ZajacStepCounter()
+{
+	return _zajac_step_counter;
 }
