@@ -1,6 +1,7 @@
 #include "DimacsParser.h"
 #include "Graph.h"
 #include "GraphException.h"
+#include "ResultSaver.h"
 #include <iostream>
 #include "ConnectedSeqeuentialColoring.h"
 #include "ZajacColoring.h"
@@ -8,6 +9,7 @@
 
 int main() 
 {
+
 	std::string filename = "../graphs/DSJC1000-9.col";
 	DimacsParser parser(filename);
 	try
@@ -31,6 +33,8 @@ int main()
 		{
 			std::cout << "Color for " << i << " : " << coloringZ.Colors()[i] << std::endl;
 		}
+    ResultSaver saver(g, coloringZ.Name(), coloringZ.Colors());
+		saver.WriteResult();
 		return 0;
 	}
 	catch (GraphException e)

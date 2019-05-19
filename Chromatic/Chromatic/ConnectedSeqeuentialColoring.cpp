@@ -71,7 +71,7 @@ void ConnectedSeqeuentialColoring::Run()
 {
 	auto start = std::chrono::system_clock::now();
 	connected_sequential_visitor vis(_colors, _number_of_colors);
-	
+	boost::degree(0, _graph);
 	boost::breadth_first_search(_graph, boost::vertex(0, _graph), visitor(vis));
 	_number_of_colors = vis._number_of_colors;
 

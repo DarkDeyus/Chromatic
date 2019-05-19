@@ -15,7 +15,7 @@ public:
 
 	Graph Read() 
 	{
-		Graph g;
+		Graph g(_filename);
 		auto add_edge_ = [&g](size_t from, size_t to) { add_edge(from, to, g); };
 		size_t vertices = 0, edges = 0;
 
@@ -41,6 +41,7 @@ public:
 		{
 			throw GraphException("Failed to parse file " + _filename + " as Dimacs");
 		}
+		
 		return g;
 	}
 

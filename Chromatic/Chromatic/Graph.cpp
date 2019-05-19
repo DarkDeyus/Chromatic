@@ -1,6 +1,6 @@
 #include "Graph.h"
 
-Graph::Graph()
+Graph::Graph(std::string name): _name(name)
 {
 }
 
@@ -17,4 +17,9 @@ size_t Graph::EdgesCount()
 size_t Graph::VerticesCount()
 {
 	return num_vertices(*this);
+}
+
+std::string Graph::GraphName()
+{
+	return _name;
 }
