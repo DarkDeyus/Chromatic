@@ -8,13 +8,13 @@ public:
 	virtual ~ZajacColoring();
 
 	virtual void Run() override;
-	virtual const Graph & ColoredGraph() override;
-	virtual const std::vector<size_t>& Colors() override;
-	virtual std::string Description() override;
-	virtual std::string Name() override;
-	virtual double ColoringTime() override;
-	virtual size_t NumberOfColors() override;
-	size_t ZajacStepCounter();
+	virtual const Graph & ColoredGraph() const override;
+	virtual const std::vector<size_t>& Colors() const override;
+	virtual std::string Description() const override;
+	virtual std::string Name() const override;
+	virtual double ColoringTime() const override;
+	virtual size_t NumberOfColors() const override;
+	size_t ZajacStepCounter() const;
 private:
 	Graph _graph;
 	static std::string _name;

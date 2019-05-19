@@ -1,13 +1,15 @@
 #pragma once
 #include <string>
+#include <iostream>
 #include "Graph.h"
+#include "Coloring.h"
 
 class ResultSaver
 {
 public:
-	ResultSaver(Graph & g, std::string coloring_name, std::vector<size_t> colors);
+	ResultSaver(const Coloring & coloring);
 	~ResultSaver();
-	void WriteResult();
+	void WriteResult(std::ostream & stream = std::cout);
 private:
 	Graph _graph;
 	std::string _coloring_name;
