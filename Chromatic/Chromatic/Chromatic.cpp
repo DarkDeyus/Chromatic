@@ -43,6 +43,7 @@ int main(int argc, char **argv)
 	{
 		Graph g = parser.Read();
 		Coloring & C = *(isZajac ? static_cast<Coloring*>(&ZajacColoring(g)) : static_cast<Coloring*>(&ConnectedSeqeuentialColoring(g)));
+		C.Run();
 		/*if (!isZajac)
 		{
 			ConnectedSeqeuentialColoring coloringCS(g);
