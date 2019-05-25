@@ -103,9 +103,11 @@ def import_colored_graph(path_to_result=None, path_to_graph=None):
     content.remove(content[0])
     # removing coloring name
     content.remove(content[0])
+	# removing coloring description
+    content.remove(content[0])
 
     for line in content:
-        if line == '':
+        if line == '' or line == '\n':
             break
         splitted_line = [int(x) for x in line.split(" ")]
         colors.append(splitted_line[1])
@@ -124,7 +126,7 @@ def visualise():
         path_to_result = sys.argv[1]
         import_colored_graph(path_to_result)
     else:
-        import_colored_graph()
+        import_colored_graph("res.txt")
     return
 
 

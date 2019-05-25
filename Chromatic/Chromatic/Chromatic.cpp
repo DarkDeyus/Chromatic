@@ -42,13 +42,16 @@ int main(int argc, char **argv)
 	try
 	{
 		Graph g = parser.Read();
-		if (!isZajac)
+		Coloring & C = *(isZajac ? static_cast<Coloring*>(&ZajacColoring(g)) : static_cast<Coloring*>(&ConnectedSeqeuentialColoring(g)));
+		C.Run();
+		/*if (!isZajac)
 		{
 			ConnectedSeqeuentialColoring coloringCS(g);
 			coloringCS.Run();
 			std::vector<size_t> colors = coloringCS.Colors();
 			if (!vis)
 			{
+				stream << "Graph name: " << coloringCS.ColoredGraph().GraphName() << std::endl;
 				stream << "Time: " << coloringCS.ColoringTime() << std::endl;
 				stream << "Number of colors: " << coloringCS.NumberOfColors() << std::endl;
 				for (int i = 0; i < g.VerticesCount(); ++i)
@@ -68,6 +71,7 @@ int main(int argc, char **argv)
 			coloringZ.Run();
 			if (!vis)
 			{
+				stream << "Graph name: " << coloringZ.ColoredGraph().GraphName() << std::endl;
 				stream << "Time: " << coloringZ.ColoringTime() << std::endl;
 				stream << "Number of colors: " << coloringZ.NumberOfColors() << std::endl;
 				stream << "Zajac's steps: " << coloringZ.ZajacStepCounter() << std::endl;
@@ -80,6 +84,22 @@ int main(int argc, char **argv)
 			{
 				ResultSaver saver(coloringZ);
 				saver.WriteResult(stream);
+			}
+		}*/
+		if (vis)
+		{
+			ResultSaver saver(C);
+			saver.WriteResult(stream);
+		}
+		else
+		{
+			stream << "Graph name: " << C.ColoredGraph().GraphName() << std::endl;
+			stream << "Time: " << C.ColoringTime() << std::endl;
+			stream << "Number of colors: " << C.NumberOfColors() << std::endl;
+
+			for (int i = 0; i < g.VerticesCount(); ++i)
+			{
+				stream << "Color for " << i << " : " << C.Colors()[i] << std::endl;
 			}
 		}
 		return 0;

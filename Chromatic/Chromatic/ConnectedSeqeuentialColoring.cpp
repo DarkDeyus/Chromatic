@@ -3,7 +3,7 @@
 #include <chrono>
 
 std::string ConnectedSeqeuentialColoring::_name = "Connected Sequential";
-std::string ConnectedSeqeuentialColoring::_description = "Colors graph with BFS alghoritm";
+//std::string ConnectedSeqeuentialColoring::_description = "Colors graph with BFS alghoritm";
 
 ConnectedSeqeuentialColoring::ConnectedSeqeuentialColoring(Graph & graph) : _graph(graph), _colors(graph.VerticesCount(), SIZE_MAX), _time(-1)
 {
@@ -91,7 +91,7 @@ const std::vector<size_t> & ConnectedSeqeuentialColoring::Colors() const
 
 std::string ConnectedSeqeuentialColoring::Description() const
 {
-	return ConnectedSeqeuentialColoring::_description;
+	return "NA";
 }
 
 std::string ConnectedSeqeuentialColoring::Name() const
