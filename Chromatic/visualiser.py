@@ -103,6 +103,8 @@ def import_colored_graph(path_to_result=None, path_to_graph=None):
     content.remove(content[0])
     # removing coloring name
     content.remove(content[0])
+	# removing coloring description
+    content.remove(content[0])
 
     for line in content:
         if line == '':

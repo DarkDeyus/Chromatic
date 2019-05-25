@@ -7,9 +7,9 @@ class Graph : public boost::adjacency_list<boost::vecS, boost::vecS, boost::undi
 public:
 	Graph(std::string name);
 	~Graph();
-	size_t EdgesCount();
-	size_t VerticesCount();
-	std::string GraphName();
+	size_t EdgesCount() const;
+	size_t VerticesCount() const;
+	std::string GraphName() const;
 
 private:
 	std::string _name;

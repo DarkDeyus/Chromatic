@@ -3,7 +3,7 @@
 #include <fstream>
 
 
-ResultSaver::ResultSaver(const Coloring& coloring) : _graph(coloring.ColoredGraph()), _coloring_name(coloring.Name()), _colors(coloring.Colors())
+ResultSaver::ResultSaver(const Coloring& coloring) : _graph(coloring.ColoredGraph()), _coloring_name(coloring.Name()), _colors(coloring.Colors()), _coloring_desc(coloring.Description())
 {
 }
 
@@ -17,6 +17,7 @@ void ResultSaver::WriteResult(std::ostream & stream)
 	std::ofstream result;
 	stream << _graph.GraphName() << std::endl;
 	stream << _coloring_name << std::endl;
+	stream << _coloring_desc << std::endl;
 	for (int i = 0; i < _graph.VerticesCount(); ++i)
 	{
 		stream << i << " " << _colors[i] << std::endl;

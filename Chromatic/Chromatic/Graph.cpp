@@ -9,17 +9,17 @@ Graph::~Graph()
 {
 }
 
-size_t Graph::EdgesCount()
+size_t Graph::EdgesCount() const
 {
 	return num_edges(*this);
 }
 
-size_t Graph::VerticesCount()
+size_t Graph::VerticesCount() const
 {
 	return num_vertices(*this);
 }
 
-std::string Graph::GraphName()
+std::string Graph::GraphName() const
 {
 	return _name;
 }
