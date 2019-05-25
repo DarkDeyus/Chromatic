@@ -3,6 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import sys
 
+
 def get_graph_to_file(graph, regular):
     lines = nx.generate_edgelist(graph, data=False)
     k = graph.number_of_edges()
@@ -97,7 +98,12 @@ def import_colored_graph(path_to_result=None, path_to_graph=None):
     colors = []
     if path_to_graph is None:
         path_to_graph = content[0].strip('\n')
+
+    # removing path to graph
     content.remove(content[0])
+    # removing coloring name
+    content.remove(content[0])
+
     for line in content:
         if line == '':
             break
