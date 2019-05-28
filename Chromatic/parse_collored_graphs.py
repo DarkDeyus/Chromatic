@@ -24,6 +24,7 @@ def parse_graph(path_to_graph, filewriter):
 
         coloring_name = graph.readline().strip('\n')
         zajac_steps = graph.readline().strip('\n')
+        time = graph.readline().strip('\n')
         lines = graph.readlines()
         for line in lines:
             if line.isspace():
@@ -32,8 +33,7 @@ def parse_graph(path_to_graph, filewriter):
             if int(parts[1]) > max_color:
                 max_color = int(parts[1])
 
-    filewriter.writerow([graph_name, vertex_count, edges_count, coloring_name, max_color, zajac_steps])
-
+    filewriter.writerow([graph_name, vertex_count, edges_count, coloring_name, max_color, time, zajac_steps])
 
 def parse_colored_graphs_int_csv(path_to_folder):
     if not os.path.isdir(path_to_folder):
@@ -42,7 +42,7 @@ def parse_colored_graphs_int_csv(path_to_folder):
     with open('graphs_results.csv', 'w') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        filewriter.writerow(['Name of graph', 'Vertices count', 'Edges count', 'Coloring name', 'Colors used', 'Zajac step count'])
+        filewriter.writerow(['Name of graph', 'Vertices count', 'Edges count', 'Coloring name', 'Colors used', 'Execution time', 'Zajac step count'])
 
         for item in os.listdir(path_to_folder):
             if item.endswith('.colored'):

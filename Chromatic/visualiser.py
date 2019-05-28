@@ -105,7 +105,9 @@ def import_colored_graph(path_to_result=None, path_to_graph=None):
     content.remove(content[0])
 	# removing coloring description
     content.remove(content[0])
-
+	# removing time
+    content.remove(content[0])
+    
     for line in content:
         if line == '' or line == '\n':
             break
@@ -126,7 +128,7 @@ def visualise():
         path_to_result = sys.argv[1]
         import_colored_graph(path_to_result)
     else:
-        import_colored_graph("res.txt")
+        import_colored_graph()
     return
 
 

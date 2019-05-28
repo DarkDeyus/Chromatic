@@ -15,4 +15,5 @@ private:
 	std::string _coloring_name;
 	std::vector<size_t> _colors;
 	std::string _coloring_desc;
+	double _coloring_time;
 };
